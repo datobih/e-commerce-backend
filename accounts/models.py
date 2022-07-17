@@ -1,7 +1,10 @@
 import email
 import re
 from django.db import models
+import product.models 
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin,BaseUserManager
+
+
 
 
 class UserManager(BaseUserManager):
@@ -45,6 +48,10 @@ class User(AbstractBaseUser,PermissionsMixin):
     saved_items
     
     '''
+
+
+
+
 
 
 
