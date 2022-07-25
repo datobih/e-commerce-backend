@@ -1,8 +1,15 @@
+from re import sub
+from django.conf import settings
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from authentication.models import ActivationToken
 from .serializers import CreateUserSerializer
 from rest_framework.authtoken.models import Token
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.core.mail import EmailMultiAlternatives
+from django.template import loader
 
 # Create your views here.
 
@@ -13,5 +20,30 @@ class CreateUserView(APIView):
         serializer= CreateUserSerializer(data=data)
         serializer.is_valid(True)
         user=serializer.save()
-        return Response({'email':user.email})
+        activation_token=ActivationToken.objects.get(user=user)
+        email_verify_token=activation_token.token
+        #Convert template to string
+        email_template_html=loader.render_to_string('authentication/email_activate.html',context={'otp':email_verify_token})
+        subject="Activate Account"
+        recipient_list=[user.email]
+        email_from=settings.EMAIL_HOST_USER
+        text_content=f"Activate this account with this OTP {email_verify_token}"
+        #Send OTP to user email address
+        email_message=EmailMultiAlternatives(subject=subject,body=email_verify_token,
+        from_email=email_from,to=recipient_list
+        )
+        email_message.attach_alternative(email_template_html,'text/html')
+        email_message.send()
 
+        return Response(status=200)
+
+
+class BlacklistRefreshToken(APIView):
+    def post(self,request):
+        data=request.data
+        if('refresh' in data):
+            refresh=data['refresh']
+            token=RefreshToken(refresh)
+            token.blacklist()
+            return Response(status=200)
+            

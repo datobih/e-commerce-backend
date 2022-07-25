@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
+from authentication.models import ActivationToken
+from rest_framework.authtoken.models import Token
+import binascii
+import os
+
 
 User=get_user_model()
 
@@ -28,6 +33,10 @@ class CreateUserSerializer(serializers.Serializer):
         user=User.objects.create_user(email=email,
         password=password,fullname=fullname
         )
+        activation_token=ActivationToken(user=user)
+        activation_token.token=binascii.hexlify(os.urandom(3)).decode()
+        activation_token.save()
+
         return user
 
 

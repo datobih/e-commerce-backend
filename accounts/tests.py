@@ -30,4 +30,5 @@ class AccountTestCase(BaseTestCase):
         'password1':'user21234'}
         response=self.client.post(create_endpoint,data=credentials)
         response_data=response.json()
+        print(response_data)
         self.assertEquals('user2@gmail.com',response_data['email'])
