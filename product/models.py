@@ -7,6 +7,8 @@ from django.contrib.auth import get_user_model
 from django.forms import BooleanField
 from django.utils.translation import gettext_lazy as _
 
+from accounts.models import Vendor
+
 # Create your models here.
 
 User=get_user_model()
@@ -26,7 +28,7 @@ class Product(models.Model):
     price=models.CharField(max_length=300)
     discount=models.IntegerField(default=0)
     category=models.CharField(max_length=50,choices=tags,default="Generic Product")
-
+    vendor=models.ForeignKey(Vendor,on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.title
