@@ -50,7 +50,7 @@ class OrderItem(models.Model):
     product=models.ForeignKey(Product,on_delete=models.SET_NULL,null=True)
     quantity=models.IntegerField()
     paid=models.BooleanField(default=False)
-    order_date=models.DateTimeField(null=True)
+    order_date=models.DateTimeField(auto_now_add=True)
     user=models.ForeignKey(User,on_delete=models.Case,related_name='order_items')
     
     def __str__(self) -> str:
@@ -61,7 +61,7 @@ class OrderItem(models.Model):
 
 class Rating(models.Model):
     user=models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True)
-    product=models.ForeignKey(Product,on_delete=models.CASCADE) #Each products should have a rating system
+    product=models.ForeignKey(Product,on_delete=models.CASCADE,related_name='ratings') #Each products should have a rating system
     stars=models.IntegerField()
     comment=models.CharField(max_length=300)
 
