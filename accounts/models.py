@@ -17,6 +17,7 @@ class UserManager(BaseUserManager):
     def create_superuser(self,email,fullname,password,**other_fields):
         other_fields.setdefault('is_staff',True)
         other_fields.setdefault('is_superuser',True)
+        other_fields.setdefault('is_active',True)
         self.create_user(email=email,password=password,fullname=fullname,**other_fields)
 
 
@@ -49,8 +50,14 @@ class User(AbstractBaseUser,PermissionsMixin):
     
     '''
 
+class Vendor(models.Model):
+    user=models.OneToOneField(User,on_delete=models.CASCADE)
+    name=models.CharField(max_length=100)
+    date_created=models.DateTimeField(auto_now_add=True)
+    description=models.CharField(max_length=400)
 
-
+    def __str__(self) -> str:
+        return self.name
 
 
 
