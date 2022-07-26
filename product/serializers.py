@@ -21,3 +21,11 @@ class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model=OrderItem
         fields='__all__'
+
+# class SimpleOrderItemSerializer(serializers.Serializer):
+#     product=serializers.CharField()
+#     quantity=serializers.IntegerField()
+
+
+# class PurchaseOrderItemSerializer(serializers.Serializer):
+#     order_items=serializers.ListSerializer(child=SimpleOrderItemSerializer())
