@@ -10,6 +10,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.mail import EmailMultiAlternatives
 from django.template import loader
+from .serializers import LoginSerializer
+from django.contrib.auth import authenticate
 
 # Create your views here.
 
@@ -36,6 +38,30 @@ class CreateUserView(APIView):
         email_message.send()
 
         return Response(status=200)
+
+
+class LoginUserView(APIView):
+     def post(self,request):
+        data=request.data
+        serializer=LoginSerializer(data=data,context={'request':request})
+        is_valid=serializer.is_valid()
+        if not is_valid:
+            return Response(serializer.errors,status=400)
+        refresh_token=serializer.validated_data['refresh_token']
+        access_token=serializer.validated_data['access_token']
+        response_data={'refresh_token':refresh_token,'access_token':access_token}
+        return Response(response_data)
+
+
+class GetUserDataView(APIView):
+
+    def get(self,request):
+        pass
+
+        
+
+
+
 
 
 class BlacklistRefreshToken(APIView):

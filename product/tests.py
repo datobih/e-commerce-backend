@@ -14,22 +14,8 @@ add_items_endpoint=reverse('add-items')
 get_cart_endpoint=reverse('get-cart')
 make_payment_endpoint=reverse('make-payment')
 # Create your tests here.
-class TestProducts(TestCase):
 
-    def init_products(self):
-        self.product=Product(title="Iphone13",description="Brand new iPhone",
-        price="700000",category="Phones",vendor=self.vendor)
-        self.product_1=Product(title="HP Omen 13",description="Brand new HP Omen 13",
-        price="700000",category="Laptops",vendor=self.vendor)
-        self.product.save()
-        self.product_1.save()
-    
-
-    def init_order_items(self):
-        self.order_item=OrderItem.objects.create(product=self.product,quantity=2,user=self.user)
-        self.order_item_1=OrderItem.objects.create(product=self.product_1,quantity=1,
-        user=self.user)
-
+class BaseTestCase(TestCase):
     def setUp(self) -> None:
         
         self.User=get_user_model()
@@ -51,7 +37,26 @@ class TestProducts(TestCase):
         self.init_order_items()
 
         self.auth_header=f'Bearer {self.access}'
-        return super().setUp()
+        return super().setUp()   
+
+
+class TestProducts(BaseTestCase):
+
+    def init_products(self):
+        self.product=Product(title="Iphone13",description="Brand new iPhone",
+        price="700000",category="Phones",vendor=self.vendor)
+        self.product_1=Product(title="HP Omen 13",description="Brand new HP Omen 13",
+        price="700000",category="Laptops",vendor=self.vendor)
+        self.product.save()
+        self.product_1.save()
+    
+
+    def init_order_items(self):
+        self.order_item=OrderItem.objects.create(product=self.product,quantity=2,user=self.user)
+        self.order_item_1=OrderItem.objects.create(product=self.product_1,quantity=1,
+        user=self.user)
+
+
 
 
 
