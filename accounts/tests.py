@@ -7,6 +7,7 @@ from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
 import json
 from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # Create your tests here.
 class BaseTestCase(APITestCase):
@@ -21,6 +22,8 @@ class BaseTestCase(APITestCase):
         self.user=self.User.objects.create_user(**registeration_credentials)
         self.user.is_active=True
         self.user.save()
+        self.token=RefreshToken.for_user(user=self.user)
+
 
 
 
@@ -47,3 +50,16 @@ class AccountTestCase(BaseTestCase):
         'confirm_password':'testuser123'}
         response=self.client.post(login_endpoint,credentials)
         print(response.json())
+
+
+
+    def test_get_user_data_endpoint(self):
+        access_token=str(self.token.access_token)
+        user_data_endpoint=reverse('accounts:user-data')
+        auth_header=f'Bearer {access_token}'
+        response=self.client.get(user_data_endpoint,HTTP_AUTHORIZATION=auth_header,
+        content_type='application/json')
+        print(response.json())
+
+
+    

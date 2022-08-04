@@ -35,12 +35,18 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserDataSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.SerializerMethodField('get_profile_picture',required=False)
+
 
     class Meta:
         model=User
         fields=['email','fullname','profile_picture','address',
-        'account_balance']
+        'account_balance','is_active']
 
+    def get_profile_picture(self,obj):
+        if(obj.profile_picture):
+            return obj.profile_picture.url
+        return ""
 
 class CreateUserSerializer(serializers.Serializer):
     fullname=serializers.CharField()
