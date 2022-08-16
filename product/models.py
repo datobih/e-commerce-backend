@@ -1,14 +1,17 @@
+from ast import arg
 from ctypes import addressof
 from email.policy import default
 import imp
 from itertools import product
 from operator import mod
+from django.conf import settings
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.forms import BooleanField
 from django.utils.translation import gettext_lazy as _
 
 from accounts.models import Vendor
+import os
 
 # Create your models here.
 
@@ -70,6 +73,22 @@ class Rating(models.Model):
 
 
 class ProductImage(models.Model):
-    image=models.ImageField()
+
+
+    
+    def get_product_dir(instance,filename):
+        return f'media/products/{filename}'
+
+
+    image=models.ImageField(upload_to=get_product_dir)
     product=models.ForeignKey(Product,on_delete=models.CASCADE,
     related_name='images')
+
+    def __str__(self) -> str:
+        return self.product.title
+
+
+    def delete(self, *args, **kwargs):
+        print("REMOVING")
+        os.remove(os.path.join(f'{settings.MEDIA_ROOT}',self.image.name))
+        return super().delete(*args, **kwargs)

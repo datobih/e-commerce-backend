@@ -21,6 +21,8 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView
 )
 from accounts.views import BlacklistRefreshToken
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/',include('accounts.urls')),
@@ -32,4 +34,4 @@ urlpatterns = [
     path('api/token/blacklist/',BlacklistRefreshToken.as_view(),name='token_blacklist')
 
 
-]
+]+static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

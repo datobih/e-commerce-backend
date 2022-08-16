@@ -12,8 +12,7 @@ from rest_framework.response import Response
 
 
 class GetAllProducts(APIView):
-    authentication_classes=[JWTAuthentication]
-    permission_classes=[IsAuthenticated]
+
     def get(self,request):
         products=Product.objects.all()
         

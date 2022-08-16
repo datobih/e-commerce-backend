@@ -15,19 +15,18 @@ User=get_user_model()
 class LoginSerializer(serializers.Serializer):
     email=serializers.EmailField()
     password=serializers.CharField()
-    confirm_password=serializers.CharField()
+
 
 
     def validate(self, attrs):
         super().validate(attrs)
         request=self.context['request']
-        if(attrs['password']==attrs['confirm_password']):
-            user=authenticate(username=attrs['email'],password=attrs['password'])
-            print(user.email)
-            refresh_token=RefreshToken.for_user(user)
 
-            attrs['refresh_token']=str(refresh_token)
-            attrs['access_token']=str(refresh_token.access_token)
+        user=authenticate(username=attrs['email'],password=attrs['password'])
+        print(user.email)
+        refresh_token=RefreshToken.for_user(user)
+        attrs['refresh_token']=str(refresh_token)
+        attrs['access_token']=str(refresh_token.access_token)
 
 
 

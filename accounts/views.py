@@ -49,7 +49,7 @@ class LoginUserView(APIView):
             return Response(serializer.errors,status=400)
         refresh_token=serializer.validated_data['refresh_token']
         access_token=serializer.validated_data['access_token']
-        response_data={'refresh_token':refresh_token,'access_token':access_token}
+        response_data={'refresh':refresh_token,'access':access_token}
         return Response(response_data)
 
 
