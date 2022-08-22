@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import OrderItem, Product
 from .serializers import OrderItemSerializer, ProductSerializer,AddOrderSerializer
 from rest_framework.response import Response
+
 # Create your views here.
 
 
@@ -16,9 +17,7 @@ class GetAllProducts(APIView):
     permission_classes=[IsAuthenticated]
     def get(self,request):
         products=Product.objects.all()
-        
         serializer=ProductSerializer(products,many=True)
-
         print(serializer.data)
         return Response(serializer.data)
 
@@ -111,32 +110,32 @@ class MakePayment(APIView):
     def post(self,request):
         data=request.data
         user=request.user
-        if('item_id' in data):
-            if(type(data['item_id']) is list):
-                print("IS LIST")
-                total_cost=0
-                order_item_list=[]
-                for item in data['item_id']:
-                    order_item=OrderItem.objects.get(pk=item)
-                    order_item_list.append(order_item)
+        if('password' in data):
+            if(not isinstance(data['password'],str)):
+                return Response(status=400)
+            if(not user.check_password(data['password'])):
+                return Response({'message':'Invalid password'})
 
-                    total_cost=total_cost+(int(order_item.product.price)*order_item.quantity)
 
-                print(order_item_list)
-                balance=int(user.account_balance)
+            order_items=OrderItem.objects.filter(paid=False,user=user)
+            total_cost=0
+            for order_item in order_items:
+                total_cost+= int(order_item.product.price)
 
-                if(total_cost<balance):
-                    balance=balance-total_cost
-                    user.account_balance=str(balance)
-                    user.save()
-                    for item in order_item_list:
-                        item.paid=True
-                        item.save()
+            balance=int(user.account_balance)
 
-                else:
-                    return Response({'message':"Insufficient balance"})
+            if(total_cost<=balance):
+                balance=balance-total_cost
+                user.account_balance=str(balance)
+                user.save()
+                for item in order_items:
+                    item.paid=True
+                    item.save()
 
-                return Response({'message':"Transaction successful"})
+            else:
+                return Response({'message':"Insufficient balance"})
+
+            return Response({'message':"Transaction successful"})
                     
 
 
