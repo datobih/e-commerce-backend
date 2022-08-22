@@ -77,7 +77,7 @@ class ProductImage(models.Model):
 
     
     def get_product_dir(instance,filename):
-        return f'media/products/{filename}'
+        return f'products/{filename}'
 
 
     image=models.ImageField(upload_to=get_product_dir)

@@ -12,7 +12,8 @@ from rest_framework.response import Response
 
 
 class GetAllProducts(APIView):
-
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
     def get(self,request):
         products=Product.objects.all()
         
@@ -20,6 +21,29 @@ class GetAllProducts(APIView):
 
         print(serializer.data)
         return Response(serializer.data)
+
+
+class ProductDetailView(APIView):
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
+
+    def get(self,request,pk):
+        product=Product.objects.get(pk=pk)
+        ratings=product.ratings.all()
+        total_rating=0
+        for rating in ratings:
+            total_rating+=rating.stars
+        if(ratings.count()==0):
+            average_rating=0
+        else:
+            average_rating=total_rating/ratings.count()
+        serializer=ProductSerializer(product)
+        data=serializer.data
+        data['average_rating']=average_rating
+        data['rating_count']=ratings.count()
+        return Response(data)
+
+
 
 class AddOrderItem(APIView):
     authentication_classes=[JWTAuthentication]
@@ -30,16 +54,18 @@ class AddOrderItem(APIView):
         serializer=AddOrderSerializer(data=data)
         is_valid=serializer.is_valid()
         if(not is_valid):
-            return serializer.errors
-        product_title=data['product']
+            return Response(serializer.errors)
+        product_pk=data['pk']
         quantity=data['quantity']
+        print(data)
         try:
-            order_item=OrderItem.objects.get(product__title=product_title,paid=False)
-            order_item.quantity=order_item.quantity+quantity
+            order_item=OrderItem.objects.get(product__pk=product_pk,paid=False)
+            order_item.quantity=(order_item.quantity+quantity)
             order_item.save()
+            order_data=OrderItemSerializer(order_item).data
 
         except OrderItem.DoesNotExist as e:
-            product=Product.objects.get(title=product_title)
+            product=Product.objects.get(pk=product_pk)
             order_item=OrderItem.objects.create(product=product,quantity=quantity,
             user=request.user)
             order_item.save()
@@ -47,6 +73,28 @@ class AddOrderItem(APIView):
             order_data=OrderItemSerializer(order_item).data
 
         return Response(status=200,data=order_data)
+
+
+class RemoveOrderItemView(APIView):
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
+    def post(self,request):
+        data=request.data
+        if(len(data)==1):
+            if('pk' in data):
+                try:
+                    print(data['pk'])
+                    order_item=OrderItem.objects.get(pk=int(data['pk']))
+                    print(order_item)
+                    order_item.delete()
+                    return Response(status=200)
+                except:
+                    print("NOT FOUND")
+                    return Response(status=400,data={'error':'pk not valid'})
+
+
+
+        return Response(status=400,data={'error':'Wrong data provided'})
 
 
 class GetCartItems(APIView):
