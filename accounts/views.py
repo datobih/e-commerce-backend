@@ -4,13 +4,14 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 from authentication.models import ActivationToken
 from .serializers import CreateUserSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.mail import EmailMultiAlternatives
 from django.template import loader
-from .serializers import LoginSerializer,UserDataSerializer
+from .serializers import LoginSerializer,UserDataSerializer,UpdateUserSerializer
 from django.contrib.auth import authenticate
 
 # Create your views here.
@@ -55,18 +56,41 @@ class LoginUserView(APIView):
 
 class GetUserDataView(APIView):
     authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
     def get(self,request):
         user=request.user
         serializer=UserDataSerializer(user)
         return Response(serializer.data)
 
 
+class TopUpBalanceView(APIView):
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
+    def post(self,request):
+        data=request.data
+        user=request.user
+        if('amount' in data):
+            if(isinstance(data['amount'],int)):
+                user.account_balance=str(int(user.account_balance)+data['amount'])
+                user.save()
+                return Response(status=200)
 
+        return Response(status=400)
 
         
-
-        
-
+class UpdateUserDetailsView(APIView):
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
+    def post(self,request):
+        data=request.data
+        print(data)
+        user=request.user
+        serializer=UpdateUserSerializer(user,data=data)
+        if(serializer.is_valid()):
+            serializer.save()
+            return Response(status=200)
+        else:
+            return Response(status=400,data=serializer.errors)
 
 
 

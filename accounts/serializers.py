@@ -78,4 +78,14 @@ class CreateUserSerializer(serializers.Serializer):
         return user
 
 
+class UpdateUserSerializer(serializers.ModelSerializer):
+
+    
+    class Meta:
+        model=User
+        fields=['fullname','email','address']
+
+    def update(self, instance, validated_data):
+        print(validated_data)
+        return super().update(instance, validated_data)
     
