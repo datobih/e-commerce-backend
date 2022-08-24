@@ -1,6 +1,4 @@
 from math import prod
-from tkinter.tix import Tree
-from turtle import title
 from django.shortcuts import render
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView

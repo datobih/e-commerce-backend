@@ -1,7 +1,7 @@
 from dataclasses import field
 from email.mime import image
 from itertools import product
-from math import prod
+
 from rest_framework import serializers
 from .models import OrderItem, Product, ProductImage
 
