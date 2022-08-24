@@ -16,7 +16,7 @@ from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+STATIC_DIR=Path(BASE_DIR,'staticfiles')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -42,17 +42,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'product',
-        'authentication',
+    'authentication',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
 
     'accounts',
+    'storages'
 
 ]
 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware"
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -176,14 +178,32 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT=STATIC_DIR
 MEDIA_URL='/media/'
 MEDIA_ROOT=Path(BASE_DIR,'media')
+
+
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+
+AWS_ACCESS_KEY_ID='AKIA2ZRQGPRZZSJ3RMTO'
+AWS_SECRET_ACCESS_KEY='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'
+AWS_STORAGE_BUCKET_NAME="datobi-ecommerce"
+
+AWS_S3_FILE_OVERWRITE=True
+AWS_DEFAULT_ACL=None
+DEFAULT_FILE_STORAGE='storages.backends.s3boto3.S3Boto3Storage'
+AWS_S3_ADDRESSING_STYLE = 'virtual'
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+AWS_S3_REGION_NAME = 'eu-west-2'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
