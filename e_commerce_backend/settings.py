@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import django_heroku
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -212,3 +213,5 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "ecommercedatobi@gmail.com"
 EMAIL_HOST_PASSWORD = "lghintvexbmkvcdk"
+
+django_heroku.settings(locals())
