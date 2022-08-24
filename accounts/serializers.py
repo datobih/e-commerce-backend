@@ -80,7 +80,6 @@ class CreateUserSerializer(serializers.Serializer):
 
 class UpdateUserSerializer(serializers.ModelSerializer):
 
-    
     class Meta:
         model=User
         fields=['fullname','email','address']

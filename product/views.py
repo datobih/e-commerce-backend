@@ -104,6 +104,15 @@ class GetCartItems(APIView):
         data=OrderItemSerializer(order_items,many=True).data
         return Response(data=data)
 
+
+class GetPurchasedItems(APIView):
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
+    def get(self,request):
+        order_items=OrderItem.objects.filter(user=request.user,paid=True)
+        data=OrderItemSerializer(order_items,many=True).data
+        return Response(data=data)
+
 class MakePayment(APIView):
     authentication_classes=[JWTAuthentication]
     permission_classes=[IsAuthenticated]
