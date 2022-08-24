@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-)qr)1oxr3i=4$(v@2)nm0-xvwc&idri()qg!%3hme2uj(^=(s(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.0.2.2','127.0.0.1']
+ALLOWED_HOSTS = ['10.0.2.2','127.0.0.1','datobi-ecommerce.herokuapp.com']
 
 AUTH_USER_MODEL='accounts.User'
 
