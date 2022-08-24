@@ -3,8 +3,10 @@ boto3==1.24.58
 botocore==1.27.58
 certifi==2022.6.15
 charset-normalizer==2.1.0
+dj-database-url==1.0.0
 Django==4.0.6
 django-filter==22.1
+django-heroku==0.3.1
 django-storages==1.13.1
 djangorestframework==3.13.1
 djangorestframework-jwt==1.11.0
@@ -14,6 +16,7 @@ idna==3.3
 jmespath==1.0.1
 Markdown==3.4.1
 Pillow==9.2.0
+psycopg2==2.9.3
 PyJWT==1.7.1
 python-dateutil==2.8.2
 pytz==2022.1
