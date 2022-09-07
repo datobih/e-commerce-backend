@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     GetAllProducts,AddOrderItem,
     GetCartItems, MakePayment, ProductDetailView,RemoveOrderItemView,
-    GetPurchasedItems
+    GetPurchasedItems,ValidatePaymentView
 
 )
 from rest_framework_simplejwt.views import (
@@ -17,7 +17,8 @@ urlpatterns = [
    path('make-payment/',MakePayment.as_view(),name='make-payment'),
    path('product-detail/<int:pk>/',ProductDetailView.as_view(),name='product-detail'),
    path('remove-order/',RemoveOrderItemView.as_view(),name='remove-order'),
-   path('get-purchased-products/',GetPurchasedItems.as_view(),name='get-purchased-items')
+   path('get-purchased-products/',GetPurchasedItems.as_view(),name='get-purchased-items'),
+   path('validate-payment/',ValidatePaymentView.as_view(),name='validate-payment')
 
 
 ]

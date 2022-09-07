@@ -150,3 +150,23 @@ class MakePayment(APIView):
         return Response(status=400)
 
 
+class ValidatePaymentView(APIView):
+    authentication_classes=[JWTAuthentication]
+    permission_classes=[IsAuthenticated]
+    def get(self,request):
+        user=request.user
+        order_items=OrderItem.objects.filter(paid=False,user=user)
+
+        for item in order_items:
+            item.paid=True
+            item.save()
+
+            return Response({'message':"Transaction successful"})
+                    
+
+
+
+        return Response(status=400)
+
+
+
