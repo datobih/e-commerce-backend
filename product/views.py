@@ -56,7 +56,7 @@ class AddOrderItem(APIView):
         quantity=data['quantity']
         print(data)
         try:
-            order_item=OrderItem.objects.get(product__pk=product_pk,paid=False)
+            order_item=OrderItem.objects.get(product__pk=product_pk,paid=False,user=request.user)
             order_item.quantity=(order_item.quantity+quantity)
             order_item.save()
             order_data=OrderItemSerializer(order_item).data
